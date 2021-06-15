@@ -15,6 +15,10 @@ set -eo pipefail
 # Include the file into your environment
 . /opt/myapp/vultr-tools.sh
 
+# Realistically you should never need to use it, but it exists just in case you deo
+# This waits on apt locks to expire so you can safely run apt commands
+wait_on_apt_lock
+
 # Install packages via apt without worrying about apt locks
 apt_safe nano vim wget
 
