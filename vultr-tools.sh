@@ -89,6 +89,13 @@ function get_var() {
 
 function install_cloud_init
 {
+    CHECK=$(cloud-init --version; echo $?)
+
+    if [ "${CHECK}" == "0" ]; then
+        echo "Cloud-Init already installed!"
+        return
+    fi
+
 	if [ -f /etc/redhat-release ]; then
         BUILD="rhel"
 		DIST="rpm"
