@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-function apt_safe() {
+function wait_on_apt_lock() {
     RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
 	while [ "$RES" -ne 0 ] ;
 	do
@@ -10,53 +10,28 @@ function apt_safe() {
 		sleep 1
 		RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
 	done
+}
 
+function apt_safe() {
+    wait_on_apt_lock
     apt install -y $@
 }
 
 function apt_update_safe() {
-    RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	while [ "$RES" -ne 0 ] ;
-	do
-		echo "Waiting for apt lock"
-		sleep 1
-		RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	done
-
+    wait_on_apt_lock
     apt update -y
 }
 
 function apt_upgrade_safe() {
-    RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	while [ "$RES" -ne 0 ] ;
-	do
-		echo "Waiting for apt lock"
-		sleep 1
-		RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	done
-
+    wait_on_apt_lock
     apt upgrade -y
 }
 
 function apt_clean_safe() {
-    RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	while [ "$RES" -ne 0 ] ;
-	do
-		echo "Waiting for apt lock"
-		sleep 1
-		RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	done
-
+    wait_on_apt_lock
     apt autoremove -y
 
-    RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	while [ "$RES" -ne 0 ] ;
-	do
-		echo "Waiting for apt lock"
-		sleep 1
-		RES=$(dpkg -i /dev/zero 2>&1 | grep "frontend lock" | wc -l)
-	done
-
+    wait_on_apt_lock
     apt autoclean -y
 }
 
