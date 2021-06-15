@@ -127,7 +127,6 @@ function install_cloud_init
 		DIST="deb";
 	fi
 
-	echo "nameserver 8.8.8.8" > /etc/resolv.conf
 	wget https://ewr1.vultrobjects.com/cloud_init_beta/cloud-init_${BUILD}_${RELEASE}.${DIST} -O /tmp/cloud-init_${BUILD}_${RELEASE}.${DIST}
 
 	if [ "${DIST}" == "rpm" ]; then
